@@ -233,7 +233,7 @@ payment.addEventListener("change", (e)=>{
 form.addEventListener("submit", (e)=>{
   let IsError = false; //to see if there is any error
   let eMessage = ''
-  let ccmessage = '' // to show if one of the cc info is incorrect
+  let ccMessage = '' // to show if one of the cc info is incorrect
   if (userName.value === '') {
     e.preventDefault()
     //userName.focus();
