@@ -9,6 +9,8 @@ const emailErr = document.createElement('div');
 const activitiesErr = document.createElement('div');
 const ccErr = document.createElement('div');
 
+const masterError = document.getElementById('masterError')
+const otherTitle = document.getElementById('other-title')
 const design = document.getElementById('design');
 const size = document.getElementById('size');
 const color = document.getElementById('color');
@@ -51,6 +53,7 @@ function addErrDivs(theErr, errDiv) {
 function InitialThings() {
   name.focus();
 
+  otherTitle.style.display = 'none';
   colordiv.style.display = 'none'; // hide the color
   activities.appendChild(totalDiv); // put a div where you will display the total
 
@@ -86,7 +89,7 @@ function noActivityChecked() {
   return true;
 }
 
-//CALL THE FUNCTION TO THE DEFAULT THINGS YOU WANT
+//CALL THIS FUNCTION TO DO THE DEFAULT THINGS YOU WANT
 InitialThings()
 
       // EVENT LISTENERS //
@@ -94,13 +97,16 @@ InitialThings()
 
 jobtitle.addEventListener("change", (e)=>{
   //CHECK TO SEE IF VALUE IS OTHER AND NO INPUT HAS BEEN APPENDED YET
-  if (jobtitle.value === 'other' && jobtitle.parentNode.lastElementChild.tagName != 'INPUT') {
-    const input = document.createElement("input");
+  if (jobtitle.value === 'other') {
+    otherTitle.style.display = ''
+    /*const input = document.createElement("input");
     input.type = 'text';
     input.id = 'other-title';
     input.placeholder = "Your Job Role"
     const parent = jobtitle.parentNode
-    parent.appendChild(input)
+    parent.appendChild(input)*/
+  }else{
+    otherTitle.style.display = 'none'
   }
 })
 
@@ -139,55 +145,65 @@ activities.addEventListener("change", (e)=>{
       if (e.target.name === 'all') {
         total += 200;
       }
-      else {
-          total += 100;
-          if (e.target.name === 'js-frameworks') {
-            activitiesToDo[3].disabled = true;
-            activitiesToDo[3].parentNode.style.color = 'grey';
-
-          }
-          else if (e.target.name === 'js-libs') {
-            activitiesToDo[4].disabled = true;
-            activitiesToDo[4].parentNode.style.color = 'grey';
-
-          }
-          else if (e.target.name === 'express') {
-            activitiesToDo[1].disabled = true;
-            activitiesToDo[1].parentNode.style.color = 'grey';
-          }
-          else if (e.target.name === 'node') {
-            activitiesToDo[2].disabled = true;
-            activitiesToDo[2].parentNode.style.color = 'grey';
-          }
-
+      else if (e.target.name === 'js-frameworks') {
+        activitiesToDo[3].disabled = true;
+        activitiesToDo[3].parentNode.style.color = 'grey';
+        total += 100;
       }
+      else if (e.target.name === 'js-libs') {
+        activitiesToDo[4].disabled = true;
+        activitiesToDo[4].parentNode.style.color = 'grey';
+        total += 100;
+      }
+      else if (e.target.name === 'express') {
+        activitiesToDo[1].disabled = true;
+        activitiesToDo[1].parentNode.style.color = 'grey';
+        total += 100;
+      }
+      else if (e.target.name === 'node') {
+        activitiesToDo[2].disabled = true;
+        activitiesToDo[2].parentNode.style.color = 'grey';
+        total += 100;
+      }
+      else if (e.target.name === 'build-tools') {
+        total += 100;
+      }
+      else if (e.target.name === 'npm') {
+        total += 100;
+      }
+
+
     }else if (!checked) {
       if (e.target.name === 'all') {
         total -= 200;
       }
-      else {
-          total -=100;
-          if (e.target.name === 'js-frameworks') {
-          activitiesToDo[3].disabled = false;
-          activitiesToDo[3].parentNode.style.color = '';
-
-          }
-          else if (e.target.name === 'js-libs') {
-            activitiesToDo[4].disabled = false;
-            activitiesToDo[4].parentNode.style.color = '';
-
-          }
-          else if (e.target.name === 'express') {
-            activitiesToDo[1].disabled = false;
-            activitiesToDo[1].parentNode.style.color = '';
-
-          }
-          else if (e.target.name === 'node') {
-            activitiesToDo[2].disabled = false;
-            activitiesToDo[2].parentNode.style.color = '';
-
-          }
+      else if (e.target.name === 'js-frameworks') {
+      activitiesToDo[3].disabled = false;
+      activitiesToDo[3].parentNode.style.color = '';
+      total -=100;
       }
+      else if (e.target.name === 'js-libs') {
+        activitiesToDo[4].disabled = false;
+        activitiesToDo[4].parentNode.style.color = '';
+        total -=100;
+      }
+      else if (e.target.name === 'express') {
+        activitiesToDo[1].disabled = false;
+        activitiesToDo[1].parentNode.style.color = '';
+        total -=100;
+      }
+      else if (e.target.name === 'node') {
+        activitiesToDo[2].disabled = false;
+        activitiesToDo[2].parentNode.style.color = '';
+        total -=100;
+      }
+      else if (e.target.name === 'build-tools') {
+        total -= 100;
+      }
+      else if (e.target.name === 'npm') {
+        total -= 100;
+      }
+
    }
 
 
@@ -215,32 +231,47 @@ payment.addEventListener("change", (e)=>{
 })
 
 form.addEventListener("submit", (e)=>{
+  let IsError = false; //to see if there is any error
+  let eMessage = ''
+  let ccmessage = '' // to show if one of the cc info is incorrect
   if (userName.value === '') {
     e.preventDefault()
-    userName.focus();
+    //userName.focus();
+    nameErr.textContent = 'please provide a name'
+    eMessage += "Name <br>"
     userName.style.borderColor = "red"
-    return false;
+    //return false;
+    isError = true;
+    console.log('111')
   }else {
     userName.style.borderColor = ""
+    nameErr.textContent = ""
   }
+  console.log('222')
   const atpos = email.value.indexOf("@");
   const dotpos = email.value.lastIndexOf(".");
   // check to see if the email is correcetly formatted
   if (atpos<1 || dotpos < atpos + 1 || dotpos + 1 >= email.value.length){
     e.preventDefault()
-    email.focus()
+    emailErr.textContent = "Please provide a full valid email address"
+    eMessage += "Email<br>"
+    //email.focus()
     email.style.borderColor = "red"
-    return false;
+    //return false;
+    isError = true;
   }else {
-    email.style.borderColor = ""
+    email.style.borderColor = "";
+    emailErr.textContent = "";
   }
   //check to see if no actvity is checked in the activities
   if (noActivityChecked()) {
     e.preventDefault()
-    activitiesToDo[0].focus();
+    //activitiesToDo[0].focus();
     activities.style.border = "red solid 2px"
+    eMessage += "Activity<br>"
     activitiesErr.textContent = "Please select atleast one activity"
-    return false
+    //return false
+    isError = true;
   }else {
       activities.style.border = "";
       activitiesErr.textContent = "";
@@ -248,93 +279,108 @@ form.addEventListener("submit", (e)=>{
   //first check if the payment is credit card then check for invalidy in
   //the info provided:
   if (payment.value === "credit_card"){
+    let ccDetailedMessage = ''
     if (ccnum.value === "") {
       e.preventDefault()
-      ccnum.focus()
+      //ccnum.focus()
+      window.location.hash = '#top';//////
       ccnum.style.borderColor = "red"
-      ccErr.textContent = 'please provide a cc number';
-      return false;
-      //provide a ccnum
+      ccMessage = "Credit card Info<br>"
+      ccDetailedMessage += 'Provide a cc number <br>';
+      isError = true;
     }
     //check if the cc # only has numbers
+    console.log(isAllNumbers(ccnum.value))
     if (!isAllNumbers(ccnum.value)) {
       e.preventDefault()
-      ccnum.focus()
+      //ccnum.focus()
+      console.log('kkkkkkk')
       ccnum.style.borderColor = "red"
-      ccErr.textContent = 'Please provide a CC Number with only Numbers';
-      return false;
+      ccMessage = "Credit card Info<br>"
+      ccDetailedMessage += 'xxxxxCC Number should only be numbers <br>';
+      isError = true;
+      //return false;
     }
     //check to see if the cc# is between 13-16 long
     if (ccnum.value.length < 13 || ccnum.value.length > 16) {
       e.preventDefault()
-      ccnum.focus()
+      //ccnum.focus()
       ccnum.style.borderColor = "red"
-      ccErr.textContent = 'Please provide a CC Number that is bw 13- 16 digits';
-      return false;
+      ccMessage = "Credit card Info<br>"
+      ccDetailedMessage += 'CC Number should be bw 13- 16 digits <br>';
+      //return false;
+      isError = true;
     }else { // remove the red border
       ccnum.style.borderColor = ""
     }
-    //check if the zip only has numbers
-    if (!isAllNumbers(zip.value)) {
+    //check if the zip only has numbers and not 5 digits long
+    if (!isAllNumbers(zip.value) || zip.value.length != 5) {
       e.preventDefault()
-      zip.focus()
+      console.log("njnnjn")
+      //zip.focus()
       zip.style.borderColor = "red"
-      ccErr.textContent = 'please zip should only be numbers';
-      return false;
+      ccMessage = "Credit card Info<br>"
+      ccDetailedMessage += 'zip should only be numbers and 5 digits long <br>';
+      //return false;
+      isError = true;
     }
-    //check to see if the zip value is not 5 digits long
-    if (zip.value.length != 5 ) {
-      e.preventDefault()
-      zip.focus()
-      zip.style.borderColor = "red"
-      ccErr.textContent = "please zip number should be 5 digits long"
-      return false;
-    }else { // remove the red border
+    else { // remove the red border
       zip.style.borderColor = ""
     }
-    //check if the ccv only has numbers
-    if (!isAllNumbers(cvv.value)) {
+    //check if the ccv only has numbers and is not 3 digits long
+    if (!isAllNumbers(cvv.value) || cvv.value.length != 3) {
       e.preventDefault()
-      cvv.focus()
+      //cvv.focus()
       cvv.style.borderColor = "red"
-      ccErr.textContent = "please ccv should only be numbers"
-      return false;
+      ccMessage = "Credit card Info<br>"
+      ccDetailedMessage += "CVV should only be numbers and 5 digits long <br>"
+      //return false;
+      isError = true;
     }
-      //check to see if the cvv value is not 3 digits long
-    if (cvv.value.length != 3) {
-      e.preventDefault()
-      cvv.focus()
-      cvv.style.borderColor = "red"
-      ccErr.textContent = "cvv should be 3 digits long"
-      return false;
-    }else { // remove the red border
+    else { // remove the red border
       cvv.style.borderColor = ""
     }
-    ccErr.textContent = ''; // i dont think i need this
-  } // if payment == creditCard
 
+    if (isError) {
+      ccErr.innerHTML = ccDetailedMessage;
+      eMessage += ccMessage;
+      masterError.innerHTML = "Faild to submit due to error in the following fields: <br> " + eMessage;
+    }
+
+
+  } // if payment == creditCard
   //return true;
+
 });
 
 //Real time update for invalidity of email
+
 email.addEventListener("keyup", (e)=>{
-  emailErr.textContent = ""
+  let err = '';
+  emailErr.innerHTML = ""
   const atpos = email.value.indexOf("@");
   const dotpos = email.value.lastIndexOf(".");
+  console.log(email.value)
   if (email.value === '') {
-    emailErr.textContent = "please provide a full valid email"
-  }else if (atpos < 0) {
-    emailErr.textContent = "Please include an '@' in the email address"
-  }else if (atpos === 0) {
-    emailErr.textContent = "please enter a part followed by '@' "
-  }else if (dotpos < 0 ) {//IF THERE IS A DOT POS
-    emailErr.textContent = "there should be a '.' included in your email"
-  }else if (atpos > dotpos) {
-    emailErr.textContent = "please enter a part and '.' after '@' "
-  }else if ((dotpos - atpos) <= 1) {
-    emailErr.textContent = "Please enter a part between '@' and '.'"
-  }else if (dotpos + 1 >= email.value.length) {
-    emailErr.textContent = "please enter a part following '.' "
+    err += "Provide a full valid email<br>";
+    console.log('7mmmmmmmmm')
+  }if (atpos < 0) {
+    err += "Include an '@' in your email address<br>";
+    console.log('6mmmmmmmmm')
+  }if (atpos === 0) {
+    samba += "Enter a part followed by '@' <br>";
+    console.log('5mmmmmmmmm')
+  }if (dotpos < 0 ) {//IF THERE IS A DOT POS
+    err += "there should be a '.' included in your email<br>";
+    console.log('4mmmmmmmmm')
+  }if (atpos > dotpos) {
+    err += "Enter a part and '.' after '@' <br>";
+    console.log('3mmmmmmmmm')
+  }if ((dotpos - atpos) <= 1) {
+    err += "Enter a part between '@' and '.'<br>";
+    console.log('2mmmmmmmmm')
+  }if (dotpos + 1 >= email.value.length) {
+    err += "Enter a part following '.' <br>";
   }
+  emailErr.innerHTML = err;
 })
-//kkk
